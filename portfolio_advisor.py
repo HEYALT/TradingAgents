@@ -68,7 +68,8 @@ def parse_decision(decision_text: str) -> dict:
             result["rating"] = line.replace("**Rating**:", "").strip()
         elif line.startswith("**Price Target**:"):
             try:
-                result["price_target"] = float(line.replace("**Price Target**:", "").strip())
+                raw_val = line.replace("**Price Target**:", "").strip().replace("$", "").replace(",", "")
+                result["price_target"] = float(raw_val)
             except ValueError:
                 pass
         elif line.startswith("**Time Horizon**:"):
@@ -182,7 +183,7 @@ def main():
     portfolio_value = get_float_input("What is your total portfolio value in USD? $", min_val=1)
     ticker = get_ticker_input()
     shares = get_float_input(f"How many shares of {ticker} do you currently hold? ", min_val=0)
-    avg_price = get_float_input(f"What is your average cost per share for {ticker}? $", min_val=0)
+    avg_price = get_float_input(f"What is your average cost per share for {ticker}? $", min_val=0.01)
     trade_date = get_date_input()
 
     position = PortfolioPosition(ticker=ticker, shares=shares, avg_price=avg_price)
@@ -194,8 +195,8 @@ def main():
 
     config = DEFAULT_CONFIG.copy()
     config["llm_provider"] = "openai"
-    config["deep_think_llm"] = "gpt-5.1"
-    config["quick_think_llm"] = "gpt-5.1-mini"
+    config["deep_think_llm"] = "gpt-4o"
+    config["quick_think_llm"] = "gpt-4o-mini"
 
     ta = TradingAgentsGraph(debug=False, config=config)
     _, decision = ta.propagate(ticker, trade_date)

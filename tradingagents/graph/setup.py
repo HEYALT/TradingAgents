@@ -39,7 +39,7 @@ class GraphSetup:
         }
 
         def parallel_analyst_node(state):
-            max_tool_iterations = 10
+            max_tool_iterations = self.conditional_logic.max_debate_rounds * 5
 
             def run_single_analyst(analyst_type):
                 node_fn = factories[analyst_type](self.quick_thinking_llm)
